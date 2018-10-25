@@ -1,0 +1,179 @@
+#include <windows.h>
+#include <GL/glut.h>
+#include <stdlib.h>
+
+float rotasi=0;
+float R=1,G=0,B=0;
+
+//Kubus
+void Kubus()
+{
+    //belakang
+    glColor3f(0.0,0.0,1.0);
+    glBegin(GL_POLYGON);
+        glVertex3f(1.0, -1.0, -0.25);
+        glVertex3f(-1.0, -1.0, -0.25);
+        glVertex3f(-1.0, 1.0, -0.25);
+        glVertex3f(1.0, 1.0, -0.25);
+    glEnd();
+
+    //kiri
+    glColor3f(1.0,0.0,0.0);
+    glBegin(GL_POLYGON);
+        glVertex3f(-1.0, -1.0, -0.25);
+        glVertex3f(-1.0, -1.0, 0.25);
+        glVertex3f(-1.0, 1.0, 0.25);
+        glVertex3f(-1.0, 1.0, -0.25);
+    glEnd();
+
+    //kanan
+    glColor3f(1.0,0.0,0.0);
+    glBegin(GL_POLYGON);
+        glVertex3f(1.0, -1.0, -0.25);
+        glVertex3f(1.0, 1.0, -0.25);
+        glVertex3f(1.0, 1.0, 0.25);
+        glVertex3f(1.0, -1.0, 0.25);
+    glEnd();
+
+    //bawah
+    glColor3f(1.0,0.0,0.0);
+    glBegin(GL_POLYGON);
+        glVertex3f(1.0, -1.0, 0.25);
+        glVertex3f(-1.0, -1.0, 0.25);
+        glVertex3f(-1.0, -1.0, -0.25);
+        glVertex3f(1.0, -1.0, -0.25);
+    glEnd();
+
+    //atas
+    glColor3f(1.0,0.0,0.0);
+    glBegin(GL_POLYGON);
+        glVertex3f(-1.0, 1.0, 0.25);
+        glVertex3f(1.0, 1.0, 0.25);
+        glVertex3f(1.0, 1.0, -0.25);
+        glVertex3f(-1.0, 1.0, -0.25);
+    glEnd();
+
+    //depan
+    glColor3f(R,G,B);
+    glBegin(GL_POLYGON);
+        glVertex3f(-1.0, -1.0, 0.25);
+        glVertex3f(1.0, -1.0, 0.25);
+        glVertex3f(1.0, 1.0, 0.25);
+        glVertex3f(-1.0, 1.0, 0.25);
+    glEnd();
+}
+
+void PapanCatur()
+{
+    glPushMatrix();
+        glTranslated(-7.0,-7.0,0.0);
+        Kubus();
+    glPopMatrix();
+}
+
+void display()
+{
+ glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
+    glPushMatrix();
+        glRotated(rotasi,0,1,0);
+        glPushMatrix();
+            for(int x=1;x<=4;x++){
+                glPushMatrix();
+                    for(int x=1;x<=8;x++){
+                        if(x%2!=0){
+                           R=1;G=1;B=1;
+                           glColor3f(1,1,0);
+                        }else{
+                            R=0;G=0;B=0;
+                           glColor3f(0,0,1);
+                        }
+                        PapanCatur();
+                        glTranslated(2,0,0);
+                    }
+                glPopMatrix();
+                glTranslated(0,4,0);
+            }
+        glPopMatrix();
+        glTranslated(0,2,0);
+        glPushMatrix();
+            for(int x=1;x<=4;x++){
+                glPushMatrix();
+                for(int x=1;x<=8;x++){
+                    if(x%2 == 0){
+                        R=1;G=1;B=1;
+                       glColor3f(1,1,0);
+                    }else{
+                       R=0;G=0;B=0;
+                       glColor3f(0,0,1);
+                    }
+                    PapanCatur();
+                    glTranslated(2,0,0);
+                }
+                glPopMatrix();
+                glTranslated(0,4,0);
+            }
+        glPopMatrix();
+    glPopMatrix();
+ glFlush();
+}
+
+void keyboard(unsigned char key, int x, int y)
+{
+    switch (key)
+    {
+     /* aplikasi berhenti ketika tombol q ditekan */
+    case 27 :
+    case 'q':
+        exit(0);
+        break;
+    case 'T':
+        if(key=='T'){
+            rotasi+=10;
+        }
+    case 't':
+        if(key=='t'){
+            rotasi-=10;
+        }
+    }
+    glutPostRedisplay();
+}
+
+void mouse(int button, int state, int x, int y)
+{
+    switch (button)
+    {
+    case GLUT_LEFT_BUTTON:
+        if(button == GLUT_LEFT_BUTTON){
+            rotasi+=10;
+        }
+    case GLUT_RIGHT_BUTTON:
+        if(button == GLUT_RIGHT_BUTTON){
+            rotasi-=10;
+        }
+    }
+    glutPostRedisplay();
+}
+
+void myinit()
+{
+ glMatrixMode(GL_PROJECTION);
+ glLoadIdentity();
+ glOrtho(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+ glMatrixMode(GL_MODELVIEW);
+ glClearColor(0.0,1.0,1.0,1.0);
+ glShadeModel(GL_FLAT);
+ glEnable(GL_DEPTH_TEST);
+}
+
+int main(int argc, char* argv[]){
+    glutInitWindowPosition(400,100);
+    glutInitWindowSize(600,600);
+ glutCreateWindow("Chess Board 8 x 8 || Programmer Bojonegoro");
+ glutDisplayFunc(display);
+ glMatrixMode(GL_MODELVIEW);
+ glutKeyboardFunc(keyboard);
+ glutMouseFunc(mouse);
+ myinit();
+ glutMainLoop();
+ return 0;
+}
